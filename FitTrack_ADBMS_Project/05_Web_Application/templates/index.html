@@ -1,0 +1,2068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTrack Pro | Enterprise Smart Gym ADBMS Platform</title>
+    <!-- Professional Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Chart.js for Live Data Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            /* Black & Crimson Red Luxury Enterprise Palette */
+            --bg-base: #060709;
+            --bg-surface: #0B0D13;
+            --glass-card: rgba(15, 18, 26, 0.72);
+            --glass-card-hover: rgba(24, 20, 24, 0.88);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-border-red: rgba(255, 30, 39, 0.45);
+            
+            --primary: #FF1E27;
+            --primary-hover: #E0121B;
+            --primary-glow: rgba(255, 30, 39, 0.35);
+            --crimson-dark: #991B1B;
+            --crimson-subtle: rgba(255, 30, 39, 0.12);
+            --accent-green: #10B981;
+            
+            --text-heading: #FFFFFF;
+            --text-body: #F1F5F9;
+            --text-muted: #94A3B8;
+            --text-dim: #64748B;
+            
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+            --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-body);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient Glowing Background Mesh (Pure Red & Black) */
+        .ambient-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(140px);
+            opacity: 0.32;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, #FF1E27 0%, #991B1B 65%, transparent 100%);
+            top: -150px;
+            left: -100px;
+        }
+
+        .orb-2 {
+            width: 650px;
+            height: 650px;
+            background: radial-gradient(circle, #B91C1C 0%, #450A0A 75%, transparent 100%);
+            bottom: -180px;
+            right: -100px;
+            opacity: 0.25;
+        }
+
+        /* Frosted Glass Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(8, 9, 13, 0.82);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-cluster {
+            display: flex;
+            align-items: center;
+            gap: 1.1rem;
+        }
+
+        .brand-symbol {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #FF1E27 0%, #991B1B 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 22px var(--primary-glow);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .brand-symbol svg {
+            width: 24px;
+            height: 24px;
+            fill: #FFF;
+        }
+
+        .brand-titles h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+            background: linear-gradient(90deg, #FFFFFF 0%, #E2E8F0 60%, #FF8A8A 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-titles p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .active-member-badge {
+            background: rgba(255, 30, 39, 0.1);
+            border: 1px solid var(--glass-border-red);
+            border-radius: var(--radius-sm);
+            padding: 0.4rem 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            font-size: 0.82rem;
+        }
+
+        .active-member-badge label {
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            letter-spacing: 0.5px;
+        }
+
+        .active-member-select {
+            background: transparent;
+            border: none;
+            color: #FFF;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 0.86rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .active-member-select option {
+            background: #0E1017;
+            color: #FFF;
+        }
+
+        /* Glassmorphic Navigation Bar */
+        nav {
+            position: sticky;
+            top: 72px;
+            z-index: 90;
+            background: rgba(8, 9, 13, 0.75);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 0.5rem 2.5rem;
+            display: flex;
+            gap: 0.65rem;
+            overflow-x: auto;
+        }
+
+        .nav-link {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 600;
+            padding: 0.65rem 1.15rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            color: #FFF;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .nav-link.active {
+            color: #FFF;
+            background: rgba(255, 30, 39, 0.16);
+            border: 1px solid var(--glass-border-red);
+            box-shadow: 0 4px 18px rgba(255, 30, 39, 0.25);
+        }
+
+        /* Workspace Main Layout */
+        .workspace {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            max-width: 1440px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 2.25rem 2.5rem;
+        }
+
+        .tab-section {
+            display: none;
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .tab-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Glass Panels */
+        .glass-panel {
+            background: var(--glass-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 1.85rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+            transition: var(--transition-smooth);
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(255, 30, 39, 0.2);
+        }
+
+        .panel-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .panel-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #FFF;
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .panel-desc {
+            font-size: 0.84rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* KPI Cards Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.35rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: var(--glass-card);
+            backdrop-filter: blur(18px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition-smooth);
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.5), 0 0 24px var(--primary-glow);
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+        }
+
+        .kpi-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--text-muted);
+        }
+
+        .kpi-value {
+            font-size: 2.1rem;
+            font-weight: 900;
+            color: #FFF;
+            margin: 0.35rem 0;
+            letter-spacing: -0.5px;
+        }
+
+        .kpi-footer {
+            font-size: 0.76rem;
+            color: #F87171;
+            font-weight: 600;
+        }
+
+        /* Classic Red & Black Buttons */
+        .btn {
+            background: linear-gradient(135deg, #FF1E27 0%, #DC2626 60%, #991B1B 100%);
+            color: #FFF;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 0.65rem 1.35rem;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 18px var(--primary-glow);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 30, 39, 0.5);
+            filter: brightness(1.1);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--glass-border);
+            color: var(--text-body);
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 30, 39, 0.12);
+            border-color: var(--glass-border-red);
+            color: #FFF;
+        }
+
+        .btn-sm {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.78rem;
+        }
+
+        /* Search & Form Inputs */
+        .search-box {
+            position: relative;
+            max-width: 320px;
+            width: 100%;
+        }
+
+        .input-control {
+            width: 100%;
+            background: rgba(10, 12, 18, 0.7);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            padding: 0.65rem 0.95rem;
+            color: #FFF;
+            font-family: inherit;
+            font-size: 0.88rem;
+            outline: none;
+            transition: var(--transition-smooth);
+        }
+
+        .input-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+            background: rgba(16, 18, 26, 0.9);
+        }
+
+        /* Glass Data Tables */
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--glass-border);
+            background: rgba(8, 9, 14, 0.6);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.86rem;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(18, 20, 28, 0.95);
+            color: var(--text-muted);
+            font-weight: 700;
+            padding: 0.95rem 1.15rem;
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            letter-spacing: 0.7px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        td {
+            padding: 0.95rem 1.15rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: #F1F5F9;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 30, 39, 0.06);
+        }
+
+        /* Professional Status Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.65rem;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        .badge-active, .badge-operational, .badge-success {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34D399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .badge-scheduled, .badge-available {
+            background: rgba(255, 30, 39, 0.12);
+            color: #FFA0A0;
+            border: 1px solid rgba(255, 30, 39, 0.3);
+        }
+
+        .badge-maintenance, .badge-cancelled {
+            background: rgba(220, 38, 38, 0.2);
+            color: #FCA5A5;
+            border: 1px solid rgba(220, 38, 38, 0.35);
+        }
+
+        /* Membership Plan Cards Grid */
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.75rem;
+        }
+
+        .plan-card {
+            background: var(--glass-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 1.85rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: var(--transition-smooth);
+        }
+
+        .plan-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--glass-border-red);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6), 0 0 25px var(--primary-glow);
+        }
+
+        .plan-category-tag {
+            align-self: flex-start;
+            background: rgba(255, 30, 39, 0.15);
+            border: 1px solid rgba(255, 30, 39, 0.35);
+            color: #FFA0A0;
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 0.25rem 0.7rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.85rem;
+        }
+
+        .plan-name {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #FFF;
+        }
+
+        .plan-price-row {
+            margin: 1rem 0;
+            display: flex;
+            align-items: baseline;
+            gap: 0.45rem;
+        }
+
+        .plan-price-row .currency {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #FF5E5E;
+        }
+
+        .plan-price-row .amount {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #FFF;
+            letter-spacing: -0.5px;
+        }
+
+        .plan-price-row .duration {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .spec-list {
+            list-style: none;
+            margin: 1.15rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            font-size: 0.84rem;
+            color: #CBD5E1;
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .spec-item::before {
+            content: '•';
+            color: var(--primary);
+            font-size: 1.4rem;
+            line-height: 0;
+        }
+
+        /* ADBMS Query Console */
+        .task-pills-row {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+        }
+
+        .task-pill {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.45rem 0.95rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .task-pill:hover, .task-pill.active {
+            background: rgba(255, 30, 39, 0.18);
+            border-color: var(--glass-border-red);
+            color: #FFA0A0;
+            box-shadow: 0 0 12px rgba(255, 30, 39, 0.25);
+        }
+
+        .code-terminal {
+            background: #040508;
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            padding: 1.15rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.86rem;
+            color: #FFA0A0;
+            width: 100%;
+            min-height: 150px;
+            resize: vertical;
+            outline: none;
+            line-height: 1.55;
+            margin-bottom: 1rem;
+        }
+
+        .code-terminal:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 18px var(--primary-glow);
+        }
+
+        /* Modal Dialog */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(4, 5, 8, 0.82);
+            backdrop-filter: blur(16px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: rgba(14, 16, 24, 0.98);
+            border: 1px solid rgba(255, 30, 39, 0.35);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 550px;
+            padding: 2.25rem;
+            box-shadow: 0 25px 65px rgba(0, 0, 0, 0.75), 0 0 45px rgba(255, 30, 39, 0.25);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            color: var(--text-muted);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            transition: var(--transition-smooth);
+        }
+
+        .modal-close:hover {
+            color: #FFF;
+            background: rgba(255, 30, 39, 0.35);
+        }
+
+        /* Toast Notifications */
+        .toast-deck {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .toast {
+            background: rgba(14, 16, 24, 0.96);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: 0.95rem 1.35rem;
+            min-width: 320px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 30, 39, 0.2);
+            color: #FFF;
+        }
+
+        .toast-success { border-left-color: var(--accent-green); }
+        .toast-error { border-left-color: var(--primary); }
+
+        footer {
+            border-top: 1px solid var(--glass-border);
+            background: rgba(6, 7, 9, 0.85);
+            backdrop-filter: blur(16px);
+            padding: 1.5rem 2.5rem;
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient Glowing Orbs Background (Pure Red & Black) -->
+    <div class="ambient-mesh">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="brand-cluster">
+            <div class="brand-symbol">
+                <svg viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43L20.57 12L17 15.57L8.43 7L12 3.43L10.57 2L9.14 3.43L7.71 2L5.57 4.14L4.14 2.71L2.71 4.14L4.14 5.57L2 7.71L3.43 9.14L2 10.57L3.43 12L7 8.43L15.57 17L12 20.57L13.43 22L14.86 20.57L16.29 22L18.43 19.86L19.86 21.29L21.29 19.86L19.86 18.43L22 16.29L20.57 14.86Z"/></svg>
+            </div>
+            <div class="brand-titles">
+                <h1>FitTrack Pro</h1>
+                <p>Enterprise Smart Gym Management System • ADBMS Architecture</p>
+            </div>
+        </div>
+
+        <div class="header-controls">
+            <!-- Global Member Context Selector -->
+            <div class="active-member-badge">
+                <label>Active Member:</label>
+                <select id="global-member-select" class="active-member-select" onchange="onGlobalMemberChange()">
+                    <option value="301">Rahul Sharma (#301)</option>
+                    <option value="302">Priya Patel (#302)</option>
+                    <option value="303">Aditya Varma (#303)</option>
+                    <option value="304">Sneha Reddy (#304)</option>
+                    <option value="305">Vikram Malhotra (#305)</option>
+                </select>
+            </div>
+            <div style="font-size:0.78rem; font-weight:700; color:#34D399; display:flex; align-items:center; gap:0.4rem;">
+                <span style="width:7px; height:7px; border-radius:50%; background:#34D399; box-shadow:0 0 8px #34D399;"></span>
+                Database Live
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav>
+        <button class="nav-link active" data-tab="analytics" onclick="switchTab('analytics')">Executive Dashboard</button>
+        <button class="nav-link" data-tab="members" onclick="switchTab('members')">Member Profiles</button>
+        <button class="nav-link" data-tab="plans" onclick="switchTab('plans')">Membership Packages</button>
+        <button class="nav-link" data-tab="classes" onclick="switchTab('classes')">Classes & Reservations</button>
+        <button class="nav-link" data-tab="trainers" onclick="switchTab('trainers')">Trainers & Reviews</button>
+        <button class="nav-link" data-tab="equipment" onclick="switchTab('equipment')">Branch Inventory</button>
+        <button class="nav-link" data-tab="billing" onclick="switchTab('billing')">Invoices & Refunds</button>
+        <button class="nav-link" data-tab="adbms_console" data-tab="adbms_console" onclick="switchTab('adbms_console')" style="color: #FFA0A0;">ADBMS Task Explorer</button>
+    </nav>
+
+    <!-- Workspace Main Container -->
+    <main class="workspace">
+
+        <!-- TAB 1: EXECUTIVE ANALYTICS -->
+        <section id="tab-analytics" class="tab-section active">
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">Gross Revenue</div>
+                    <div class="kpi-value" id="kpi-rev">INR 0</div>
+                    <div class="kpi-footer">Settled via UPI / Cards / Cash</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Enrolled Members</div>
+                    <div class="kpi-value" id="kpi-members-count">0</div>
+                    <div class="kpi-footer">10 Multi-City Gym Locations</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Active Subscriptions</div>
+                    <div class="kpi-value" id="kpi-subs-count">0</div>
+                    <div class="kpi-footer">Enforced Expiry Date Bounds</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Certified Trainers</div>
+                    <div class="kpi-value" id="kpi-trainers-count">0</div>
+                    <div class="kpi-footer">Active Coaches On-Duty</div>
+                </div>
+            </div>
+
+            <!-- Visual Charts -->
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                <div class="glass-panel" style="margin-bottom:0;">
+                    <div class="panel-header-row">
+                        <div>
+                            <div class="panel-title">Monthly Revenue Trends</div>
+                            <div class="panel-desc">Monthly financial aggregations via SQL Group By view</div>
+                        </div>
+                    </div>
+                    <canvas id="chart-revenue" height="180"></canvas>
+                </div>
+                <div class="glass-panel" style="margin-bottom:0;">
+                    <div class="panel-header-row">
+                        <div>
+                            <div class="panel-title">Branch Subscriptions Distribution</div>
+                            <div class="panel-desc">Membership allocation across regional facilities</div>
+                        </div>
+                    </div>
+                    <canvas id="chart-branches" height="180"></canvas>
+                </div>
+            </div>
+
+            <!-- Confirmed Subscriptions Table -->
+            <div class="glass-panel">
+                <div class="panel-header-row">
+                    <div>
+                        <div class="panel-title">Active Membership Contracts & Invoicing Ledger</div>
+                        <div class="panel-desc">Populated via 4-way Relational Joins (Member, Subscription, Plan, Payment)</div>
+                    </div>
+                    <button class="btn btn-outline" onclick="loadDashboard()">Refresh Ledger</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sub ID</th>
+                                <th>Member Name</th>
+                                <th>Package Enrolled</th>
+                                <th>Contract Validity</th>
+                                <th>Amount Paid</th>
+                                <th>Payment Mode</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-active-subs">
+                            <tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Loading records...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: MEMBER PROFILES -->
+        <section id="tab-members" class="tab-section">
+            <div class="glass-panel">
+                <div class="panel-header-row">
+                    <div>
+                        <div class="panel-title">Member Onboarding Form</div>
+                        <div class="panel-desc">Validates Primary Key, Unique Constraints on Email/Phone, and Foreign Keys</div>
+                    </div>
+                </div>
+                <form id="form-enroll-member" onsubmit="handleMemberRegistration(event)">
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem;">
+                        <div>
+                            <label style="font-size:0.8rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:0.4rem;">Full Name</label>
+                            <input type="text" id="member-name" class="input-control" placeholder="e.g. Aryan Sehgal" required>
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:0.4rem;">Email Address (Unique)</label>
+                            <input type="email" id="member-email" class="input-control" placeholder="aryan.s@example.com" required>
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:0.4rem;">Contact Phone (Unique)</label>
+                            <input type="text" id="member-phone" class="input-control" placeholder="+91-9876500050" required>
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:0.4rem;">Home Gym Branch</label>
+                            <select id="member-branch" class="input-control">
+                                <option value="101">FitTrack Elite - Indiranagar</option>
+                                <option value="102">FitTrack Arena - Koramangala</option>
+                                <option value="103">FitTrack Prime - HSR Layout</option>
+                                <option value="104">FitTrack Platinum - Banjara Hills</option>
+                                <option value="105">FitTrack Studio - Jubilee Hills</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:flex-end;">
+                        <button type="submit" class="btn">Register Member</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Members Directory Table -->
+            <div class="glass-panel">
+                <div class="panel-header-row">
+                    <div>
+                        <div class="panel-title">Registered Members Directory & Health Metrics</div>
+                        <div class="panel-desc">Calculated BMI metrics and health parameters</div>
+                    </div>
+                    <div class="search-box">
+                        <input type="text" id="search-members" class="input-control" placeholder="Search by name, email, or branch..." oninput="filterMembersTable()">
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Branch</th>
+                                <th>Calculated BMI</th>
+                                <th>Role</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-members"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: MEMBERSHIP PACKAGES -->
+        <section id="tab-plans" class="tab-section">
+            <div class="panel-header-row" style="margin-bottom: 2rem;">
+                <div>
+                    <h2 style="font-size: 1.8rem; font-weight: 800; color: #FFF;">Membership Packages & Semi-Structured Specs</h2>
+                    <p style="color:var(--text-muted); font-size: 0.88rem;">Semi-structured JSON perks: Tier, guest passes, PT sessions, spa access</p>
+                </div>
+            </div>
+            <div class="plans-grid" id="plans-container"></div>
+        </section>
+
+        <!-- TAB 4: CLASSES & RESERVATIONS -->
+        <section id="tab-classes" class="tab-section">
+            <div class="glass-panel">
+                <div class="panel-header-row">
+                    <div>
+                        <div class="panel-title">Scheduled Fitness Sessions & Slot Availability</div>
+                        <div class="panel-desc">Dynamically verifies remaining capacity: (Max Capacity - Confirmed Bookings)</div>
+                    </div>
+                    <div class="search-box">
+                        <input type="text" id="search-classes" class="input-control" placeholder="Search class or instructor..." oninput="filterClassesTable()">
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Class ID</th>
+                                <th>Workout Routine</th>
+                                <th>Instructor Coach</th>
+                                <th>Branch Studio</th>
+                                <th>Timing</th>
+                                <th>Available Seats</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-classes"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Confirmed Reservations Table -->
+            <div class="glass-panel">
+                <div class="panel-header-row">
+                    <div>
+                        <div class="panel-title">Active Reservations Audit</div>
+                        <div class="panel-desc">Supports cancellation and seat restoration</div>
+                    </div>
+                    <button class="btn btn-outline" onclick="loadBookings()">Refresh Reservations</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Member Name</th>
+                                <th>Class Session</th>
+                                <th>Branch</th>
+                                <th>Instructor</th>
+                                <th>Booking Timestamp</th>
+                                <th>Status</th>
+                                <th>Cancellation</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-bookings"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: TRAINERS & REVIEWS -->
+        <section id="tab-trainers" class="tab-section">
+            <div class="glass-panel">
+                <div class="panel-header-row">
+                    <div>
+                        <div class="panel-title">Certified Coaches & Member Feedback</div>
+                        <div class="panel-desc">Trainer specializations, hourly rates, and aggregated ratings</div>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Trainer ID</th>
+                                <th>Instructor Name</th>
+                                <th>Specialization</th>
+                                <th>Hourly Rate</th>
+                                <th>Home Branch</th>
+                                <th>Average Rating</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-trainers"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Submit Review Form -->
+            <div class="glass-panel">
+                <div class="panel-header-row">
+                    <div>
+                        <div class="panel-title">Submit Trainer Evaluation</div>
+                        <div class="panel-desc">Enforces check constraint (Rating between 1 and 5)</div>
+                    </div>
+                </div>
+                <form id="form-review" onsubmit="handleReviewSubmission(event)">
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 1.25rem;">
+                        <div>
+                            <label style="font-size:0.8rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:0.4rem;">Select Trainer</label>
+                            <select id="review-trainer-select" class="input-control"></select>
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:0.4rem;">Rating (1 to 5 Stars)</label>
+                            <select id="review-rating" class="input-control">
+                                <option value="5">5 - Excellent</option>
+                                <option value="4">4 - Very Good</option>
+                                <option value="3">3 - Satisfactory</option>
+                                <option value="2">2 - Needs Improvement</option>
+                                <option value="1">1 - Poor</option>
+                            </select>
+                        </div>
+                        <div style="grid-column: 1 / -1;">
+                            <label style="font-size:0.8rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:0.4rem;">Comments / Qualitative Feedback</label>
+                            <input type="text" id="review-comments" class="input-control" placeholder="e.g. Exceptional attention to posture and technique." required>
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:flex-end;">
+                        <button type="submit" class="btn">Submit Review</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- TAB 6: BRANCH EQUIPMENT INVENTORY -->
+        <section id="tab-equipment" class="tab-section">
+            <div class="glass-panel">
+                <div class="panel-header-row">
+                    <div>
+                        <div class="panel-title">Branch Equipment Inventory & Servicing Audits</div>
+                        <div class="panel-desc">Tracks equipment quantity, condition status, and maintenance due dates</div>
+                    </div>
+                    <div class="search-box">
+                        <input type="text" id="search-equipment" class="input-control" placeholder="Filter equipment..." oninput="filterEquipmentTable()">
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Machine / Apparatus</th>
+                                <th>Category</th>
+                                <th>Branch Location</th>
+                                <th>Supplier Vendor</th>
+                                <th>Quantity</th>
+                                <th>Condition Status</th>
+                                <th>Update Condition</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-equipment"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 7: BILLING, INVOICES & REFUNDS -->
+        <section id="tab-billing" class="tab-section">
+            <div class="glass-panel">
+                <div class="panel-header-row">
+                    <div>
+                        <div class="panel-title">Tax Invoices & Payment Ledger</div>
+                        <div class="panel-desc">Official invoices with 18% GST calculation generated atomically</div>
+                    </div>
+                    <button class="btn btn-outline" onclick="loadInvoices()">Refresh Invoices</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Invoice Number</th>
+                                <th>Member Name</th>
+                                <th>Invoice Date</th>
+                                <th>Tax Rate</th>
+                                <th>Tax Amount</th>
+                                <th>Final Total</th>
+                                <th>Payment Mode</th>
+                                <th>Refund Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-invoices"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Refunds Audit Log -->
+            <div class="glass-panel">
+                <div class="panel-header-row">
+                    <div>
+                        <div class="panel-title">Refunds & Disputed Transaction Log</div>
+                        <div class="panel-desc">Audit trail for refunded membership fees</div>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Refund ID</th>
+                                <th>Payment Ref</th>
+                                <th>Member Name</th>
+                                <th>Refund Amount</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                                <th>Processed Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-refunds"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 8: ADBMS TASK EXPLORER -->
+        <section id="tab-adbms_console" class="tab-section">
+            <div class="glass-panel">
+                <div class="panel-header-row">
+                    <div>
+                        <div class="panel-title">ADBMS Syllabus Task Evaluator Console</div>
+                        <div class="panel-desc">Select any prescribed syllabus task below to load verified SQL and execute live</div>
+                    </div>
+                    <button class="btn btn-outline" onclick="exportQueryToCSV()">Export Output (CSV)</button>
+                </div>
+
+                <div class="task-pills-row" id="task-pills-container"></div>
+
+                <div id="task-meta-banner" style="background: rgba(255, 30, 39, 0.08); border-left: 4px solid var(--primary); border-radius: 4px; padding: 0.95rem 1.25rem; margin-bottom: 1rem; font-size: 0.86rem; color: #FFA0A0;">
+                    Select a task chip above or write an arbitrary SQL statement below.
+                </div>
+
+                <textarea id="sql-editor" class="code-terminal" spellcheck="false" placeholder="Write or edit SQL query here..."></textarea>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;">
+                    <div style="display:flex; gap:0.75rem;">
+                        <button class="btn" onclick="executeCurrentQuery()">Execute Query</button>
+                        <button class="btn btn-outline" onclick="clearQueryEditor()">Clear</button>
+                    </div>
+                    <div id="query-speed-badge" style="font-family:'JetBrains Mono',monospace; font-size:0.84rem; color:var(--text-muted);">
+                        Ready for execution.
+                    </div>
+                </div>
+
+                <div class="table-wrap" style="max-height: 480px;">
+                    <table>
+                        <thead id="tbl-query-head">
+                            <tr><th>Result</th></tr>
+                        </thead>
+                        <tbody id="tbl-query-body">
+                            <tr><td style="color:var(--text-muted); text-align:center;">Execute a query to inspect tabular records.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal: Checkout / Subscription -->
+    <div id="checkout-modal" class="modal-overlay">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeModal('checkout-modal')">✕</button>
+            <div style="font-size:1.35rem; font-weight:800; color:#FFF; margin-bottom:0.35rem;">Membership Subscription Checkout</div>
+            <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:1.5rem;">Executes multi-statement atomic transaction: Inserts subscription contract, line items, payment record, and official tax invoice.</div>
+
+            <div style="background:rgba(255,255,255,0.04); border-radius:8px; padding:1.2rem; margin-bottom:1.25rem; border:1px solid rgba(255,30,39,0.25);">
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                    <span style="color:var(--text-muted);">Enrolling Member:</span>
+                    <strong id="modal-member-name" style="color:#FFF;">-</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                    <span style="color:var(--text-muted);">Package Name:</span>
+                    <strong id="modal-plan-name" style="color:#FFF;">-</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                    <span style="color:var(--text-muted);">Base Amount:</span>
+                    <strong id="modal-base-price" style="color:#FFF;">INR 0</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; color:#34D399;">
+                    <span>Promotional Discount:</span>
+                    <strong id="modal-discount-amt">- INR 0</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; color:var(--text-muted);">
+                    <span>GST (18%):</span>
+                    <strong id="modal-tax-amt">INR 0</strong>
+                </div>
+                <hr style="border:none; border-top:1px solid rgba(255,255,255,0.08); margin:0.75rem 0;">
+                <div style="display:flex; justify-content:space-between; font-size:1.15rem; font-weight:800;">
+                    <span style="color:#FFF;">Final Payable Total:</span>
+                    <span id="modal-final-total" style="color:var(--primary);">INR 0</span>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:0.5rem; margin-bottom:1.5rem;">
+                <input type="text" id="coupon-input" class="input-control" placeholder="Try coupon: ANNUALGOLD20 or FITFIRST10">
+                <button type="button" class="btn btn-outline" onclick="applyCouponCode()">Apply</button>
+            </div>
+
+            <button class="btn" style="width:100%; justify-content:center; padding:0.85rem;" onclick="confirmSubscriptionCheckout()">
+                Confirm & Settle via Payment Gateway
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal: Member Health Profile -->
+    <div id="profile-modal" class="modal-overlay">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeModal('profile-modal')">✕</button>
+            <div style="font-size:1.35rem; font-weight:800; color:#FFF; margin-bottom:0.35rem;">Member Health Profile</div>
+            <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:1.25rem;">Object-relational attributes, calculated BMI, and semi-structured medical notes.</div>
+            <div id="profile-content" style="font-size:0.88rem; line-height:1.7;"></div>
+        </div>
+    </div>
+
+    <!-- Modal: Request Refund -->
+    <div id="refund-modal" class="modal-overlay">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeModal('refund-modal')">✕</button>
+            <div style="font-size:1.35rem; font-weight:800; color:#FFF; margin-bottom:0.35rem;">Process Transaction Refund</div>
+            <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:1.25rem;">Audits cancellation and issues reimbursement for verified payments.</div>
+            <form onsubmit="handleRefundSubmit(event)">
+                <input type="hidden" id="refund-payment-id">
+                <div style="margin-bottom:1rem;">
+                    <label style="font-size:0.8rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:0.4rem;">Refund Amount (INR)</label>
+                    <input type="number" step="0.01" id="refund-amount" class="input-control" required>
+                </div>
+                <div style="margin-bottom:1.5rem;">
+                    <label style="font-size:0.8rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:0.4rem;">Justification / Refund Reason</label>
+                    <input type="text" id="refund-reason" class="input-control" placeholder="e.g. Relocated to another city prior to start date." required>
+                </div>
+                <button type="submit" class="btn" style="width:100%; justify-content:center;">Process Refund</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-deck" id="toast-deck"></div>
+
+    <!-- Footer -->
+    <footer>
+        <p><strong>FitTrack Pro • Enterprise Smart Gym Management System</strong> | Advanced Database Management Systems (ADBMS)</p>
+        <p style="margin-top:0.35rem; font-size:0.76rem;">FastAPI Backend, SQLite/PostgreSQL Dual RDBMS, Object-Relational UDTs, JSON & XML Integration</p>
+    </footer>
+
+    <!-- Client Application Logic -->
+    <script>
+        let allMembers = [];
+        let allPlans = [];
+        let allClasses = [];
+        let allEquipment = [];
+        let allTrainers = [];
+        let presetTasks = [];
+        let activePlanForCheckout = null;
+        let revenueChartInstance = null;
+        let branchChartInstance = null;
+
+        // Custom Toast Notification (Zero emojis)
+        function showToast(type, title, message) {
+            const deck = document.getElementById('toast-deck');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <div style="font-weight:700; font-size:0.88rem; color:${type==='success'?'#34D399':'#FF3B30'}">${title}</div>
+                <div style="font-size:0.8rem; color:#94A3B8; margin-top:0.2rem;">${message}</div>
+            `;
+            deck.appendChild(toast);
+            setTimeout(() => {
+                toast.style.transition = 'all 0.3s ease';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function getActiveMemberId() {
+            return parseInt(document.getElementById('global-member-select').value) || 301;
+        }
+
+        function onGlobalMemberChange() {
+            const mId = getActiveMemberId();
+            const member = allMembers.find(m => m.member_id === mId);
+            if (member) {
+                showToast('success', 'Context Switched', `Active operating member set to ${member.full_name} (#${mId}).`);
+            }
+        }
+
+        // Robust Tab Navigation (Direct display control)
+        function switchTab(tabId) {
+            // 1. Hide all tab sections
+            document.querySelectorAll('.tab-section').forEach(el => {
+                el.style.display = 'none';
+                el.classList.remove('active');
+            });
+
+            // 2. Remove active state from nav buttons
+            document.querySelectorAll('.nav-link').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // 3. Show selected section
+            const target = document.getElementById('tab-' + tabId);
+            if (target) {
+                target.style.display = 'block';
+                target.classList.add('active');
+            }
+
+            // 4. Highlight active nav button
+            const activeBtn = document.querySelector(`.nav-link[data-tab="${tabId}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+
+            // 5. Trigger tab data refresh safely
+            try {
+                if (tabId === 'analytics') loadDashboard();
+                else if (tabId === 'members') loadMembers();
+                else if (tabId === 'plans') loadPlans();
+                else if (tabId === 'classes') { loadClasses(); loadBookings(); }
+                else if (tabId === 'trainers') loadTrainers();
+                else if (tabId === 'equipment') loadEquipment();
+                else if (tabId === 'billing') { loadInvoices(); loadRefunds(); }
+                else if (tabId === 'adbms_console') loadADBMSConsole();
+            } catch (err) {
+                console.error('Error refreshing tab data:', tabId, err);
+            }
+        }
+
+        // 1. Analytics & Executive Dashboard
+        async function loadDashboard() {
+            try {
+                const res = await fetch('/api/dashboard/stats');
+                const data = await res.json();
+                document.getElementById('kpi-rev').innerText = 'INR ' + Number(data.gross_revenue).toLocaleString('en-IN');
+                document.getElementById('kpi-members-count').innerText = data.total_members;
+                document.getElementById('kpi-subs-count').innerText = data.active_subscriptions;
+                document.getElementById('kpi-trainers-count').innerText = data.available_trainers;
+
+                // Load active subscriptions ledger
+                const subsRes = await fetch('/api/adbms/run_query', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        sql: `SELECT s.subscription_id, m.full_name, p.plan_name, s.start_date || ' to ' || s.end_date AS validity, s.total_amount, py.payment_mode, s.status
+                              FROM MEMBER_SUBSCRIPTION s
+                              JOIN MEMBER m ON s.member_id = m.member_id
+                              JOIN MEMBERSHIP_PLAN p ON s.plan_id = p.plan_id
+                              JOIN PAYMENT py ON s.subscription_id = py.subscription_id
+                              ORDER BY s.subscription_id DESC LIMIT 8;`
+                    })
+                });
+                const subsData = await subsRes.json();
+                if (subsData.status === 'success') {
+                    const tbody = document.getElementById('tbody-active-subs');
+                    tbody.innerHTML = subsData.rows.map(r => `
+                        <tr>
+                            <td>#${r[0]}</td>
+                            <td><strong>${r[1]}</strong></td>
+                            <td>${r[2]}</td>
+                            <td>${r[3]}</td>
+                            <td>INR ${Number(r[4]).toLocaleString('en-IN')}</td>
+                            <td><span class="badge badge-scheduled">${r[5]}</span></td>
+                            <td><span class="badge badge-active">${r[6]}</span></td>
+                        </tr>
+                    `).join('');
+                }
+
+                renderCharts();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderCharts() {
+            if (typeof Chart === 'undefined') return;
+
+            const ctxRev = document.getElementById('chart-revenue')?.getContext('2d');
+            if (ctxRev) {
+                if (revenueChartInstance) revenueChartInstance.destroy();
+                revenueChartInstance = new Chart(ctxRev, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+                        datasets: [{
+                            label: 'Monthly Revenue (INR)',
+                            data: [38500, 20500, 66500, 8500, 7500, 18500, 24000, 31000, 28000, 35000, 44840],
+                            borderColor: '#FF1E27',
+                            backgroundColor: 'rgba(255, 30, 39, 0.12)',
+                            fill: true,
+                            tension: 0.35,
+                            borderWidth: 2.5,
+                            pointBackgroundColor: '#FF1E27',
+                            pointBorderColor: '#FFF'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94A3B8' } },
+                            x: { grid: { display: false }, ticks: { color: '#94A3B8' } }
+                        }
+                    }
+                });
+            }
+
+            const ctxBranch = document.getElementById('chart-branches')?.getContext('2d');
+            if (ctxBranch) {
+                if (branchChartInstance) branchChartInstance.destroy();
+                branchChartInstance = new Chart(ctxBranch, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Indiranagar', 'Koramangala', 'HSR Layout', 'Banjara Hills', 'Bandra West', 'Others'],
+                        datasets: [{
+                            data: [38, 22, 16, 12, 8, 4],
+                            backgroundColor: ['#FF1E27', '#DC2626', '#991B1B', '#7F1D1D', '#450A0A', '#1E293B'],
+                            borderWidth: 1,
+                            borderColor: '#060709'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { position: 'right', labels: { color: '#94A3B8', font: { family: 'Outfit' } } } }
+                    }
+                });
+            }
+        }
+
+        // 2. Member Profiles
+        async function loadMembers() {
+            const res = await fetch('/api/members');
+            allMembers = await res.json();
+            renderMembersTable(allMembers);
+            updateGlobalMemberSelector();
+        }
+
+        function updateGlobalMemberSelector() {
+            const select = document.getElementById('global-member-select');
+            const current = select.value;
+            select.innerHTML = allMembers.map(m => `<option value="${m.member_id}">${m.full_name} (#${m.member_id})</option>`).join('');
+            if (current) select.value = current;
+        }
+
+        function renderMembersTable(members) {
+            const tbody = document.getElementById('tbody-members');
+            tbody.innerHTML = members.map(m => `
+                <tr>
+                    <td>#${m.member_id}</td>
+                    <td><strong>${m.full_name}</strong></td>
+                    <td>${m.email}</td>
+                    <td>${m.phone}</td>
+                    <td>${m.branch_name}</td>
+                    <td><strong>${m.calculated_bmi ? m.calculated_bmi + ' (Normal)' : 'N/A'}</strong></td>
+                    <td><span class="badge badge-scheduled">${m.role}</span></td>
+                    <td>
+                        <button class="btn btn-outline btn-sm" onclick="viewMemberProfile(${m.member_id})">View Profile</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterMembersTable() {
+            const q = document.getElementById('search-members').value.toLowerCase();
+            const filtered = allMembers.filter(m => 
+                m.full_name.toLowerCase().includes(q) || 
+                m.email.toLowerCase().includes(q) || 
+                m.branch_name.toLowerCase().includes(q)
+            );
+            renderMembersTable(filtered);
+        }
+
+        function viewMemberProfile(memberId) {
+            const m = allMembers.find(x => x.member_id === memberId);
+            if (!m) return;
+            const notes = m.medical_notes || {};
+            const html = `
+                <div style="margin-bottom:0.75rem;"><strong>Full Name:</strong> ${m.full_name} (Member ID #${m.member_id})</div>
+                <div style="margin-bottom:0.75rem;"><strong>Contact Details:</strong> ${m.email} | ${m.phone}</div>
+                <div style="margin-bottom:0.75rem;"><strong>Home Branch:</strong> ${m.branch_name}</div>
+                <div style="margin-bottom:0.75rem;"><strong>Physical Measurements:</strong> Height: ${m.height_cm || 'N/A'} cm | Weight: ${m.weight_kg || 'N/A'} kg</div>
+                <div style="margin-bottom:0.75rem;"><strong>Calculated BMI:</strong> <span style="color:#34D399; font-weight:bold;">${m.calculated_bmi || 'N/A'}</span></div>
+                <div style="margin-bottom:0.75rem;"><strong>Emergency Contact:</strong> ${m.emergency_contact || 'N/A'}</div>
+                <div style="background:rgba(255,255,255,0.04); border-radius:6px; padding:0.75rem; margin-top:1rem;">
+                    <strong>Semi-Structured Medical Notes (JSON):</strong>
+                    <pre style="font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:#FFA0A0; margin-top:0.4rem;">${JSON.stringify(notes, null, 2)}</pre>
+                </div>
+            `;
+            document.getElementById('profile-content').innerHTML = html;
+            document.getElementById('profile-modal').classList.add('active');
+        }
+
+        async function handleMemberRegistration(e) {
+            e.preventDefault();
+            const payload = {
+                full_name: document.getElementById('member-name').value,
+                email: document.getElementById('member-email').value,
+                phone: document.getElementById('member-phone').value,
+                branch_id: parseInt(document.getElementById('member-branch').value),
+                address_id: 1,
+                role: 'MEMBER'
+            };
+
+            try {
+                const res = await fetch('/api/members', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    showToast('success', 'Registration Completed', data.message);
+                    document.getElementById('form-enroll-member').reset();
+                    loadMembers();
+                } else {
+                    showToast('error', 'Integrity Constraint Error', data.detail);
+                }
+            } catch (err) {
+                showToast('error', 'Network Error', err.message);
+            }
+        }
+
+        // 3. Plans & Checkout
+        async function loadPlans() {
+            try {
+                const res = await fetch('/api/plans');
+                allPlans = await res.json();
+                const container = document.getElementById('plans-container');
+                container.innerHTML = allPlans.map(p => {
+                    const s = p.specifications || {};
+                    return `
+                        <div class="plan-card">
+                            <div>
+                                <span class="plan-category-tag">${p.category_name}</span>
+                                <div class="plan-name">${p.plan_name}</div>
+                                <div class="plan-price-row">
+                                    <span class="currency">INR</span>
+                                    <span class="amount">${Number(p.base_price).toLocaleString('en-IN')}</span>
+                                    <span class="duration">/ ${p.duration_months} mo</span>
+                                </div>
+                                <p style="font-size:0.84rem; color:var(--text-muted); line-height:1.5;">${p.description}</p>
+                                
+                                <ul class="spec-list">
+                                    <li class="spec-item">Tier Level: <strong>${s.tier || 'Gold Standard'}</strong></li>
+                                    <li class="spec-item">Personal Coaching: <strong>${s.pt_sessions_included || 0} Sessions</strong></li>
+                                    <li class="spec-item">Guest Passes: <strong>${s.guest_passes || 0} Vouchers</strong></li>
+                                    <li class="spec-item">Spa & Plunge Pool: <strong>${s.spa_access ? 'Included' : 'Standard'}</strong></li>
+                                </ul>
+                            </div>
+                            <button class="btn" style="width:100%; justify-content:center; margin-top:1.25rem;" onclick="openCheckoutModal(${p.plan_id})">
+                                Enroll Member
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error('Error loading plans:', err);
+            }
+        }
+
+        function openCheckoutModal(planId) {
+            const plan = allPlans.find(x => x.plan_id === planId);
+            if (!plan) return;
+            activePlanForCheckout = plan;
+            const activeMId = getActiveMemberId();
+            const member = allMembers.find(x => x.member_id === activeMId);
+            document.getElementById('modal-member-name').innerText = member ? `${member.full_name} (#${activeMId})` : `Member #${activeMId}`;
+            document.getElementById('modal-plan-name').innerText = plan.plan_name;
+            document.getElementById('modal-base-price').innerText = 'INR ' + Number(plan.base_price).toLocaleString('en-IN');
+            updateCheckoutMath(0);
+            document.getElementById('checkout-modal').classList.add('active');
+        }
+
+        function updateCheckoutMath(discountPct) {
+            if (!activePlanForCheckout) return;
+            const base = activePlanForCheckout.base_price;
+            const discAmt = base * (discountPct / 100);
+            const taxable = base - discAmt;
+            const tax = taxable * 0.18;
+            const total = taxable + tax;
+
+            document.getElementById('modal-discount-amt').innerText = `- INR ` + Math.round(discAmt).toLocaleString('en-IN');
+            document.getElementById('modal-tax-amt').innerText = `INR ` + Math.round(tax).toLocaleString('en-IN');
+            document.getElementById('modal-final-total').innerText = `INR ` + Math.round(total).toLocaleString('en-IN');
+        }
+
+        function applyCouponCode() {
+            const code = document.getElementById('coupon-input').value.trim().toUpperCase();
+            if (code === 'ANNUALGOLD20') {
+                updateCheckoutMath(20);
+                showToast('success', 'Coupon Applied', '20% Annual Gold Discount Applied.');
+            } else if (code === 'FITFIRST10') {
+                updateCheckoutMath(10);
+                showToast('success', 'Coupon Applied', '10% Welcome Discount Applied.');
+            } else if (code === 'STUDENT15') {
+                updateCheckoutMath(15);
+                showToast('success', 'Coupon Applied', '15% Student Discount Applied.');
+            } else {
+                updateCheckoutMath(0);
+                showToast('error', 'Invalid Coupon', 'Coupon code is invalid or expired.');
+            }
+        }
+
+        async function confirmSubscriptionCheckout() {
+            const coupon = document.getElementById('coupon-input').value.trim();
+            const activeMId = getActiveMemberId();
+            try {
+                const res = await fetch('/api/subscribe', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        member_id: activeMId,
+                        plan_id: activePlanForCheckout.plan_id,
+                        branch_id: 101,
+                        payment_mode: 'UPI',
+                        coupon_code: coupon || null
+                    })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    closeModal('checkout-modal');
+                    showToast('success', 'Transaction Committed', `Issued Invoice: ${data.invoice_number}`);
+                    switchTab('analytics');
+                } else {
+                    showToast('error', 'Transaction Failed', data.detail);
+                }
+            } catch (err) {
+                showToast('error', 'Checkout Error', err.message);
+            }
+        }
+
+        // 4. Classes & Bookings
+        async function loadClasses() {
+            const res = await fetch('/api/classes');
+            allClasses = await res.json();
+            renderClassesTable(allClasses);
+        }
+
+        function renderClassesTable(classes) {
+            const tbody = document.getElementById('tbody-classes');
+            tbody.innerHTML = classes.map(c => `
+                <tr>
+                    <td>#${c.class_id}</td>
+                    <td><strong>${c.class_name}</strong></td>
+                    <td>${c.trainer_name} <br><small style="color:var(--text-muted);">${c.specialization}</small></td>
+                    <td>${c.branch_name}</td>
+                    <td>${c.start_time.split(' ')[1] || c.start_time} - ${c.end_time.split(' ')[1] || c.end_time}</td>
+                    <td><strong style="color:${c.available_slots > 0 ? '#34D399' : '#FF3B30'}">${c.available_slots} / ${c.max_capacity} Seats</strong></td>
+                    <td><span class="badge ${c.status === 'SCHEDULED' ? 'badge-scheduled' : 'badge-maintenance'}">${c.status}</span></td>
+                    <td>
+                        <button class="btn btn-sm" onclick="bookSession(${c.class_id})" ${c.available_slots <= 0 ? 'disabled style="opacity:0.5;"' : ''}>
+                            Reserve Seat
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterClassesTable() {
+            const q = document.getElementById('search-classes').value.toLowerCase();
+            const filtered = allClasses.filter(c => 
+                c.class_name.toLowerCase().includes(q) || 
+                c.trainer_name.toLowerCase().includes(q) || 
+                c.branch_name.toLowerCase().includes(q)
+            );
+            renderClassesTable(filtered);
+        }
+
+        async function bookSession(classId) {
+            const activeMId = getActiveMemberId();
+            try {
+                const res = await fetch('/api/book', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ member_id: activeMId, class_id: classId })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    showToast('success', 'Reservation Confirmed', `Booking #${data.booking_id} issued for Member #${activeMId}.`);
+                    loadClasses();
+                    loadBookings();
+                } else {
+                    showToast('error', 'Booking Rule Violation', data.detail);
+                }
+            } catch (err) {
+                showToast('error', 'Network Error', err.message);
+            }
+        }
+
+        async function loadBookings() {
+            const res = await fetch('/api/bookings');
+            const data = await res.json();
+            const tbody = document.getElementById('tbody-bookings');
+            tbody.innerHTML = data.map(b => `
+                <tr>
+                    <td>#${b.booking_id}</td>
+                    <td><strong>${b.member_name}</strong> (#${b.member_id})</td>
+                    <td>${b.class_name}</td>
+                    <td>${b.branch_name}</td>
+                    <td>${b.trainer_name}</td>
+                    <td>${b.booking_date}</td>
+                    <td><span class="badge ${b.booking_status === 'CONFIRMED' ? 'badge-active' : 'badge-maintenance'}">${b.booking_status}</span></td>
+                    <td>
+                        ${b.booking_status === 'CONFIRMED' ? 
+                            `<button class="btn btn-outline btn-sm" onclick="cancelBooking(${b.booking_id})">Cancel</button>` : 
+                            `<span style="color:var(--text-muted); font-size:0.8rem;">Cancelled</span>`
+                        }
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function cancelBooking(bookingId) {
+            try {
+                const res = await fetch('/api/bookings/cancel', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ booking_id: bookingId })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    showToast('success', 'Booking Cancelled', data.message);
+                    loadBookings();
+                    loadClasses();
+                } else {
+                    showToast('error', 'Cancellation Failed', data.detail);
+                }
+            } catch (err) {
+                showToast('error', 'Error', err.message);
+            }
+        }
+
+        // 5. Trainers & Reviews
+        async function loadTrainers() {
+            const res = await fetch('/api/trainers');
+            allTrainers = await res.json();
+            const tbody = document.getElementById('tbody-trainers');
+            tbody.innerHTML = allTrainers.map(t => `
+                <tr>
+                    <td>#${t.trainer_id}</td>
+                    <td><strong>${t.full_name}</strong></td>
+                    <td>${t.specialization}</td>
+                    <td>INR ${t.hourly_rate} / hr</td>
+                    <td>${t.branch_name}</td>
+                    <td><strong style="color:#FFA0A0;">${t.avg_rating} / 5.0</strong> (${t.total_reviews} reviews)</td>
+                    <td><span class="badge ${t.availability_status === 'AVAILABLE' ? 'badge-active' : 'badge-maintenance'}">${t.availability_status}</span></td>
+                    <td>
+                        <button class="btn btn-outline btn-sm" onclick="preselectTrainerForReview(${t.trainer_id})">Rate Trainer</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Populate trainer select in review form
+            const select = document.getElementById('review-trainer-select');
+            select.innerHTML = allTrainers.map(t => `<option value="${t.trainer_id}">${t.full_name} (${t.specialization})</option>`).join('');
+        }
+
+        function preselectTrainerForReview(trainerId) {
+            document.getElementById('review-trainer-select').value = trainerId;
+            document.getElementById('form-review').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function handleReviewSubmission(e) {
+            e.preventDefault();
+            const payload = {
+                member_id: getActiveMemberId(),
+                trainer_id: parseInt(document.getElementById('review-trainer-select').value),
+                rating: parseInt(document.getElementById('review-rating').value),
+                comments: document.getElementById('review-comments').value
+            };
+
+            try {
+                const res = await fetch('/api/reviews', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    showToast('success', 'Review Recorded', 'Your feedback was logged in the database.');
+                    document.getElementById('review-comments').value = '';
+                    loadTrainers();
+                } else {
+                    showToast('error', 'Review Submission Error', data.detail);
+                }
+            } catch (err) {
+                showToast('error', 'Error', err.message);
+            }
+        }
+
+        // 6. Equipment Inventory
+        async function loadEquipment() {
+            const res = await fetch('/api/equipment');
+            allEquipment = await res.json();
+            renderEquipmentTable(allEquipment);
+        }
+
+        function renderEquipmentTable(rows) {
+            const tbody = document.getElementById('tbody-equipment');
+            tbody.innerHTML = rows.map(r => `
+                <tr>
+                    <td>#${r.equipment_id}</td>
+                    <td><strong>${r.equipment_name}</strong></td>
+                    <td>${r.category}</td>
+                    <td>${r.branch_name}</td>
+                    <td>${r.vendor_name}</td>
+                    <td><strong>${r.quantity} Units</strong></td>
+                    <td><span class="badge ${r.condition_status === 'OPERATIONAL' ? 'badge-operational' : 'badge-maintenance'}">${r.condition_status}</span></td>
+                    <td>
+                        <select class="input-control" style="padding:0.25rem 0.5rem; font-size:0.78rem;" onchange="updateEquipmentCondition(${r.equipment_id}, this.value)">
+                            <option value="OPERATIONAL" ${r.condition_status==='OPERATIONAL'?'selected':''}>Operational</option>
+                            <option value="UNDER_MAINTENANCE" ${r.condition_status==='UNDER_MAINTENANCE'?'selected':''}>Under Maintenance</option>
+                            <option value="RETIRED" ${r.condition_status==='RETIRED'?'selected':''}>Retired</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterEquipmentTable() {
+            const q = document.getElementById('search-equipment').value.toLowerCase();
+            const filtered = allEquipment.filter(r => 
+                r.equipment_name.toLowerCase().includes(q) || 
+                r.category.toLowerCase().includes(q) || 
+                r.branch_name.toLowerCase().includes(q)
+            );
+            renderEquipmentTable(filtered);
+        }
+
+        async function updateEquipmentCondition(equipmentId, newStatus) {
+            try {
+                const res = await fetch('/api/equipment/status', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ equipment_id: equipmentId, condition_status: newStatus })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    showToast('success', 'Status Updated', data.message);
+                    loadEquipment();
+                } else {
+                    showToast('error', 'Update Failed', data.detail);
+                }
+            } catch (err) {
+                showToast('error', 'Error', err.message);
+            }
+        }
+
+        // 7. Invoices & Refunds
+        async function loadInvoices() {
+            const res = await fetch('/api/invoices');
+            const data = await res.json();
+            const tbody = document.getElementById('tbody-invoices');
+            tbody.innerHTML = data.map(i => `
+                <tr>
+                    <td><strong>${i.invoice_number}</strong></td>
+                    <td>${i.member_name}</td>
+                    <td>${i.invoice_date}</td>
+                    <td>${i.tax_rate_percent}%</td>
+                    <td>INR ${Number(i.tax_amount).toLocaleString('en-IN')}</td>
+                    <td><strong>INR ${Number(i.final_total).toLocaleString('en-IN')}</strong></td>
+                    <td><span class="badge badge-scheduled">${i.payment_mode}</span></td>
+                    <td>
+                        <button class="btn btn-outline btn-sm" onclick="openRefundModal(${i.payment_id}, ${i.final_total})">Request Refund</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openRefundModal(paymentId, finalTotal) {
+            document.getElementById('refund-payment-id').value = paymentId;
+            document.getElementById('refund-amount').value = (finalTotal * 0.8).toFixed(2); // 80% default policy
+            document.getElementById('refund-modal').classList.add('active');
+        }
+
+        async function handleRefundSubmit(e) {
+            e.preventDefault();
+            const payload = {
+                payment_id: parseInt(document.getElementById('refund-payment-id').value),
+                refund_amount: parseFloat(document.getElementById('refund-amount').value),
+                refund_reason: document.getElementById('refund-reason').value
+            };
+            try {
+                const res = await fetch('/api/refunds', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    closeModal('refund-modal');
+                    showToast('success', 'Refund Issued', data.message);
+                    loadRefunds();
+                } else {
+                    showToast('error', 'Refund Denied', data.detail);
+                }
+            } catch (err) {
+                showToast('error', 'Error', err.message);
+            }
+        }
+
+        async function loadRefunds() {
+            const res = await fetch('/api/refunds');
+            const data = await res.json();
+            const tbody = document.getElementById('tbody-refunds');
+            tbody.innerHTML = data.map(r => `
+                <tr>
+                    <td>#${r.refund_id}</td>
+                    <td>Payment #${r.payment_id}</td>
+                    <td><strong>${r.member_name}</strong></td>
+                    <td>INR ${Number(r.refund_amount).toLocaleString('en-IN')}</td>
+                    <td>${r.refund_reason}</td>
+                    <td><span class="badge badge-active">${r.refund_status}</span></td>
+                    <td>${r.refund_date}</td>
+                </tr>
+            `).join('');
+        }
+
+        // 8. ADBMS Console
+        async function loadADBMSConsole() {
+            if (presetTasks.length === 0) {
+                const res = await fetch('/api/adbms/tasks');
+                presetTasks = await res.json();
+                const container = document.getElementById('task-pills-container');
+                container.innerHTML = presetTasks.map((t, idx) => `
+                    <button class="task-pill" onclick="selectPresetTask(${idx})">${t.title.split(':')[0]}: ${t.title.split(':')[1] || ''}</button>
+                `).join('');
+                if (presetTasks.length > 0) selectPresetTask(0);
+            }
+        }
+
+        function selectPresetTask(index) {
+            document.querySelectorAll('.task-pill').forEach((p, i) => {
+                p.classList.toggle('active', i === index);
+            });
+            const task = presetTasks[index];
+            document.getElementById('task-meta-banner').innerHTML = `<strong>${task.title}:</strong> ${task.description}`;
+            document.getElementById('sql-editor').value = task.sql;
+        }
+
+        function clearQueryEditor() {
+            document.getElementById('sql-editor').value = '';
+            document.getElementById('task-meta-banner').innerText = 'Enter any SQL statement to execute against fittrack.db';
+        }
+
+        let latestQueryColumns = [];
+        let latestQueryRows = [];
+
+        async function executeCurrentQuery() {
+            const sql = document.getElementById('sql-editor').value.trim();
+            if (!sql) {
+                showToast('error', 'Empty Query', 'Please enter or select an SQL statement first.');
+                return;
+            }
+
+            const speedBadge = document.getElementById('query-speed-badge');
+            speedBadge.innerText = 'Executing query on database engine...';
+
+            try {
+                const res = await fetch('/api/adbms/run_query', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ sql })
+                });
+                const data = await res.json();
+
+                if (data.status === 'success') {
+                    speedBadge.innerHTML = `<span style="color:#34D399;">Execution time: ${data.elapsed_ms} ms</span> | Returned ${data.row_count} rows`;
+                    latestQueryColumns = data.columns;
+                    latestQueryRows = data.rows;
+
+                    document.getElementById('tbl-query-head').innerHTML = `<tr>${data.columns.map(c => `<th>${c}</th>`).join('')}</tr>`;
+                    const tbody = document.getElementById('tbl-query-body');
+                    if (data.rows.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="${data.columns.length}" style="text-align:center; color:var(--text-muted);">Zero matching rows returned.</td></tr>`;
+                    } else {
+                        tbody.innerHTML = data.rows.map(r => `
+                            <tr>${r.map(val => `<td>${val !== null ? val : '<em style="color:#64748B;">NULL</em>'}</td>`).join('')}</tr>
+                        `).join('');
+                    }
+                } else {
+                    speedBadge.innerHTML = `<span style="color:#FF3B30;">Execution Error (${data.elapsed_ms} ms)</span>`;
+                    document.getElementById('tbl-query-head').innerHTML = `<tr><th style="color:#FF3B30;">Engine Error Message</th></tr>`;
+                    document.getElementById('tbl-query-body').innerHTML = `<tr><td style="color:#FF3B30; font-family:'JetBrains Mono',monospace;">${data.message}</td></tr>`;
+                }
+            } catch (err) {
+                speedBadge.innerText = 'Request error: ' + err.message;
+            }
+        }
+
+        function exportQueryToCSV() {
+            if (latestQueryColumns.length === 0 || latestQueryRows.length === 0) {
+                showToast('error', 'Export Failed', 'Please execute a query returning rows first.');
+                return;
+            }
+
+            let csv = latestQueryColumns.join(',') + '\n';
+            latestQueryRows.forEach(row => {
+                csv += row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',') + '\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', `FitTrack_Query_Export_${Date.now()}.csv`);
+            a.click();
+            showToast('success', 'Export Complete', 'Exported query results as CSV.');
+        }
+
+        // Initialize and preload on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadDashboard();
+            loadMembers();
+            loadPlans();
+            loadClasses();
+            loadBookings();
+            loadTrainers();
+            loadEquipment();
+            loadInvoices();
+            loadRefunds();
+            loadADBMSConsole();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: fittrack-adbms
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python FitTrack_ADBMS_Project/05_Web_Application/db_init.py
+    startCommand: python main.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9

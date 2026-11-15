@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <!-- Root Element -->
+    <xs:element name="SubscriptionOrder">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="OrderDate" type="xs:date"/>
+                <xs:element name="Member" type="MemberType"/>
+                <xs:element name="SubscriptionDetails" type="SubscriptionDetailsType"/>
+                <xs:element name="Items" type="ItemsType"/>
+                <xs:element name="PricingSummary" type="PricingSummaryType"/>
+                <xs:element name="PaymentTransaction" type="PaymentTransactionType"/>
+            </xs:sequence>
+            <xs:attribute name="orderId" type="xs:string" use="required"/>
+            <xs:attribute name="status" use="required">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="CONFIRMED"/>
+                        <xs:enumeration value="PENDING"/>
+                        <xs:enumeration value="CANCELLED"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Member Complex Type -->
+    <xs:complexType name="MemberType">
+        <xs:sequence>
+            <xs:element name="FullName" type="xs:string"/>
+            <xs:element name="Email">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:pattern value="[^@]+@[^\.]+\..+"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="Phone" type="xs:string"/>
+            <xs:element name="HomeBranch">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="branchId" type="xs:positiveInteger" use="required"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+    </xs:complexType>
+
+    <!-- Subscription Details Type -->
+    <xs:complexType name="SubscriptionDetailsType">
+        <xs:sequence>
+            <xs:element name="PlanId" type="xs:positiveInteger"/>
+            <xs:element name="PlanName" type="xs:string"/>
+            <xs:element name="Category" type="xs:string"/>
+            <xs:element name="DurationMonths" type="xs:positiveInteger"/>
+            <xs:element name="StartDate" type="xs:date"/>
+            <xs:element name="EndDate" type="xs:date"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Items Type -->
+    <xs:complexType name="ItemsType">
+        <xs:sequence>
+            <xs:element name="Item" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="ItemName" type="xs:string"/>
+                        <xs:element name="Quantity" type="xs:positiveInteger"/>
+                        <xs:element name="UnitPrice">
+                            <xs:complexType>
+                                <xs:simpleContent>
+                                    <xs:extension base="xs:decimal">
+                                        <xs:attribute name="currency" type="xs:string" default="INR"/>
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="itemId" type="xs:positiveInteger" use="required"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Pricing Summary Type -->
+    <xs:complexType name="PricingSummaryType">
+        <xs:sequence>
+            <xs:element name="Subtotal">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:decimal">
+                            <xs:attribute name="currency" type="xs:string" default="INR"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="DiscountApplied" minOccurs="0">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:decimal">
+                            <xs:attribute name="coupon" type="xs:string" use="required"/>
+                            <xs:attribute name="percentage" type="xs:decimal" use="required"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="TaxableAmount" type="xs:decimal"/>
+            <xs:element name="TaxRate">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:decimal">
+                            <xs:attribute name="percent" type="xs:decimal" use="required"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="FinalTotal" type="xs:decimal"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Payment Transaction Type -->
+    <xs:complexType name="PaymentTransactionType">
+        <xs:sequence>
+            <xs:element name="TxnId" type="xs:string"/>
+            <xs:element name="Timestamp" type="xs:dateTime"/>
+        </xs:sequence>
+        <xs:attribute name="mode" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="UPI"/>
+                    <xs:enumeration value="CREDIT_CARD"/>
+                    <xs:enumeration value="DEBIT_CARD"/>
+                    <xs:enumeration value="NET_BANKING"/>
+                    <xs:enumeration value="CASH"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="status" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="SUCCESS"/>
+                    <xs:enumeration value="FAILED"/>
+                    <xs:enumeration value="PENDING"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+
+</xs:schema>

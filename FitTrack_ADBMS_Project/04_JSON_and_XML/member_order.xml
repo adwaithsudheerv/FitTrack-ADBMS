@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE SubscriptionOrder SYSTEM "member_order.dtd">
+<SubscriptionOrder orderId="SO-2026-9001" status="CONFIRMED">
+    <OrderDate>2026-11-15</OrderDate>
+    <Member id="301">
+        <FullName>Rahul Sharma</FullName>
+        <Email>rahul.sharma@example.com</Email>
+        <Phone>+91-9876500001</Phone>
+        <HomeBranch branchId="101">FitTrack Elite - Indiranagar</HomeBranch>
+    </Member>
+    <SubscriptionDetails>
+        <PlanId>701</PlanId>
+        <PlanName>Iron Champion Annual</PlanName>
+        <Category>Powerlifting Specialization</Category>
+        <DurationMonths>12</DurationMonths>
+        <StartDate>2026-11-20</StartDate>
+        <EndDate>2027-11-19</EndDate>
+    </SubscriptionDetails>
+    <Items>
+        <Item itemId="1501">
+            <ItemName>Base Annual Powerlifting Membership</ItemName>
+            <Quantity>1</Quantity>
+            <UnitPrice currency="INR">24000.00</UnitPrice>
+        </Item>
+        <Item itemId="1502">
+            <ItemName>VIP Dedicated Locker Rental (12M)</ItemName>
+            <Quantity>1</Quantity>
+            <UnitPrice currency="INR">4000.00</UnitPrice>
+        </Item>
+        <Item itemId="1503">
+            <ItemName>Personal Coaching Starter Package (5 Sessions)</ItemName>
+            <Quantity>1</Quantity>
+            <UnitPrice currency="INR">6000.00</UnitPrice>
+        </Item>
+    </Items>
+    <PricingSummary>
+        <Subtotal currency="INR">34000.00</Subtotal>
+        <DiscountApplied coupon="ANNUALGOLD20" percentage="20">6800.00</DiscountApplied>
+        <TaxableAmount currency="INR">27200.00</TaxableAmount>
+        <TaxRate percent="18.0">4896.00</TaxRate>
+        <FinalTotal currency="INR">32096.00</FinalTotal>
+    </PricingSummary>
+    <PaymentTransaction mode="UPI" status="SUCCESS">
+        <TxnId>TXN-UPI-998812345</TxnId>
+        <Timestamp>2026-11-15T10:15:30</Timestamp>
+    </PaymentTransaction>
+</SubscriptionOrder>

@@ -1,0 +1,60 @@
+<!-- DTD for FitTrack Member Subscription Order -->
+<!ELEMENT SubscriptionOrder (OrderDate, Member, SubscriptionDetails, Items, PricingSummary, PaymentTransaction)>
+<!ATTLIST SubscriptionOrder
+    orderId CDATA #REQUIRED
+    status (CONFIRMED | PENDING | CANCELLED) #REQUIRED>
+
+<!ELEMENT OrderDate (#PCDATA)>
+
+<!ELEMENT Member (FullName, Email, Phone, HomeBranch)>
+<!ATTLIST Member
+    id CDATA #REQUIRED>
+<!ELEMENT FullName (#PCDATA)>
+<!ELEMENT Email (#PCDATA)>
+<!ELEMENT Phone (#PCDATA)>
+<!ELEMENT HomeBranch (#PCDATA)>
+<!ATTLIST HomeBranch
+    branchId CDATA #REQUIRED>
+
+<!ELEMENT SubscriptionDetails (PlanId, PlanName, Category, DurationMonths, StartDate, EndDate)>
+<!ELEMENT PlanId (#PCDATA)>
+<!ELEMENT PlanName (#PCDATA)>
+<!ELEMENT Category (#PCDATA)>
+<!ELEMENT DurationMonths (#PCDATA)>
+<!ELEMENT StartDate (#PCDATA)>
+<!ELEMENT EndDate (#PCDATA)>
+
+<!ELEMENT Items (Item+)>
+<!ELEMENT Item (ItemName, Quantity, UnitPrice)>
+<!ATTLIST Item
+    itemId CDATA #REQUIRED>
+<!ELEMENT ItemName (#PCDATA)>
+<!ELEMENT Quantity (#PCDATA)>
+<!ELEMENT UnitPrice (#PCDATA)>
+<!ATTLIST UnitPrice
+    currency CDATA "INR">
+
+<!ELEMENT PricingSummary (Subtotal, DiscountApplied?, TaxableAmount, TaxRate, FinalTotal)>
+<!ELEMENT Subtotal (#PCDATA)>
+<!ATTLIST Subtotal
+    currency CDATA "INR">
+<!ELEMENT DiscountApplied (#PCDATA)>
+<!ATTLIST DiscountApplied
+    coupon CDATA #REQUIRED
+    percentage CDATA #REQUIRED>
+<!ELEMENT TaxableAmount (#PCDATA)>
+<!ATTLIST TaxableAmount
+    currency CDATA "INR">
+<!ELEMENT TaxRate (#PCDATA)>
+<!ATTLIST TaxRate
+    percent CDATA #REQUIRED>
+<!ELEMENT FinalTotal (#PCDATA)>
+<!ATTLIST FinalTotal
+    currency CDATA "INR">
+
+<!ELEMENT PaymentTransaction (TxnId, Timestamp)>
+<!ATTLIST PaymentTransaction
+    mode (UPI | CREDIT_CARD | DEBIT_CARD | NET_BANKING | CASH) #REQUIRED
+    status (SUCCESS | FAILED | PENDING) #REQUIRED>
+<!ELEMENT TxnId (#PCDATA)>
+<!ELEMENT Timestamp (#PCDATA)>
