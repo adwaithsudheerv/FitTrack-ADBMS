@@ -12,6 +12,7 @@ import json
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from typing import Optional, List, Any
 
@@ -27,6 +28,9 @@ app.add_middleware(
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "fittrack.db")
 TEMPLATES_PATH = os.path.join(os.path.dirname(__file__), "templates")
+STATIC_PATH = os.path.join(os.path.dirname(__file__), "static")
+os.makedirs(STATIC_PATH, exist_ok=True)
+app.mount("/static", StaticFiles(directory=STATIC_PATH), name="static")
 
 # Auto-initialize database on startup if not present (Essential for Render deployment)
 if not os.path.exists(DB_PATH):
@@ -35,6 +39,48 @@ if not os.path.exists(DB_PATH):
         init_database()
     except Exception as e:
         print("Database auto-init notice:", e)
+
+def ensure_support_file_table():
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute("""
+        CREATE TABLE IF NOT EXISTS new_fittrack_adbms_support_file (
+            file_id INT PRIMARY KEY,
+            deliverable_no INT NOT NULL,
+            deliverable_title VARCHAR(100) NOT NULL,
+            task_mapping VARCHAR(100) NOT NULL,
+            file_name VARCHAR(100) NOT NULL,
+            file_path VARCHAR(255) NOT NULL,
+            category VARCHAR(50) NOT NULL,
+            status VARCHAR(20) DEFAULT 'ACTIVE'
+        );
+        """)
+        c.execute("SELECT COUNT(*) FROM new_fittrack_adbms_support_file;")
+        if c.fetchone()[0] == 0:
+            c.executemany("""
+            INSERT INTO new_fittrack_adbms_support_file VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+            """, [
+                (1, 1, 'Problem definition and project objectives', 'Problem Statement & Roles', '01_Problem_Statement_and_Objectives.md', '01_Design_and_Schema/01_Problem_Statement_and_Objectives.md', 'Documentation', 'ACTIVE'),
+                (2, 2, 'ER diagram and relational schema', 'Task 1: DDL & Constraints', 'schema_ddl.sql', '02_Database_Scripts/schema_ddl.sql', 'Database DDL', 'ACTIVE'),
+                (3, 2, 'ER diagram and relational schema', 'Relational Model & Normalization', '02_ER_Diagram_and_Relational_Schema.md', '01_Design_and_Schema/02_ER_Diagram_and_Relational_Schema.md', 'Design Architecture', 'ACTIVE'),
+                (4, 3, 'SQL query implementation document', 'Task 1: Seed Records', 'mock_data_dml.sql', '02_Database_Scripts/mock_data_dml.sql', 'Database DML', 'ACTIVE'),
+                (5, 3, 'SQL query implementation document', 'Tasks 1-5: Queries & Views', 'tasks_01_to_05_queries.sql', '02_Database_Scripts/tasks_01_to_05_queries.sql', 'Core SQL', 'ACTIVE'),
+                (6, 4, 'PL/SQL programs and stored procedure scripts', 'Task 6: Procedures & Functions', 'task_06_plsql_procedures_functions.sql', '03_PLSQL_and_Advanced_DB/task_06_plsql_procedures_functions.sql', 'PL/SQL', 'ACTIVE'),
+                (7, 4, 'PL/SQL programs and stored procedure scripts', 'Task 7: Exception Handling', 'task_07_exception_handling.sql', '03_PLSQL_and_Advanced_DB/task_07_exception_handling.sql', 'PL/SQL Exceptions', 'ACTIVE'),
+                (8, 4, 'PL/SQL programs and stored procedure scripts', 'Task 8-9: ORDBMS & Inheritance', 'task_08_object_relational.sql', '03_PLSQL_and_Advanced_DB/task_08_object_relational.sql', 'Advanced Database', 'ACTIVE'),
+                (9, 5, 'JSON and XML implementation scripts', 'Tasks 10-12: JSON, XML & DTD/XSD', 'task_10_json_operations.sql', '04_JSON_and_XML/task_10_json_operations.sql', 'Semi-Structured Data', 'ACTIVE'),
+                (10, 6, 'Python/PHP application source code', 'Full-Stack Web Platform', 'app.py', '05_Web_Application/app.py', 'Application Code', 'ACTIVE'),
+                (11, 7, 'Test cases and test results', '25 Test Cases & 100% Pass Runner', 'test_cases.md', '06_Test_Cases_and_Results/test_cases.md', 'Quality Assurance', 'ACTIVE'),
+                (12, 8, 'Screenshots of application modules', 'Evaluation Screenshots Guide', 'Module_Walkthrough_and_Screenshots_Guide.md', '07_Documentation_and_Report/Module_Walkthrough_and_Screenshots_Guide.md', 'Module Evaluation', 'ACTIVE'),
+                (13, 9, 'Complete project report and demonstration', 'Deliverables 1-9 Master Report', 'FitTrack_ADBMS_Final_Project_Report.md', '07_Documentation_and_Report/FitTrack_ADBMS_Final_Project_Report.md', 'Final Master Report', 'ACTIVE')
+            ])
+            conn.commit()
+        conn.close()
+    except Exception as ex:
+        print("ensure_support_file_table notice:", ex)
+
+ensure_support_file_table()
 
 def get_db():
     conn = sqlite3.connect(DB_PATH)
@@ -96,7 +142,14 @@ async def favicon():
 async def serve_home():
     html_file = os.path.join(TEMPLATES_PATH, "index.html")
     with open(html_file, "r", encoding="utf-8") as f:
-        return HTMLResponse(content=f.read())
+        return HTMLResponse(
+            content=f.read(),
+            headers={
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0"
+            }
+        )
 
 # ============================================================================
 # 1. Analytics & Executive KPI Endpoints
@@ -521,6 +574,14 @@ def request_refund(req: RefundCreateRequest):
 # ============================================================================
 PRESET_TASKS = [
     {
+        "id": "task_support_registry",
+        "title": "Deliverables Registry: SELECT * FROM new_fittrack_adbms_support_file",
+        "description": "Lab Manual Deliverables 1-9 & Tasks 1-12 mapping with file paths, category and execution readiness.",
+        "sql": """SELECT file_id, deliverable_no, deliverable_title, task_mapping, file_name, file_path, status
+FROM new_fittrack_adbms_support_file
+ORDER BY deliverable_no ASC, file_id ASC;"""
+    },
+    {
         "id": "task_01",
         "title": "Task 1: Transaction Processing & DML Updates",
         "description": "Multi-table atomic transaction during enrollment: creates subscription, line items, payment record, and official invoice.",
@@ -672,6 +733,17 @@ ORDER BY daily_calories DESC;"""
 @app.get("/api/adbms/tasks")
 def list_preset_tasks():
     return PRESET_TASKS
+
+@app.get("/api/adbms/support_files")
+def list_support_files():
+    ensure_support_file_table()
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("SELECT * FROM new_fittrack_adbms_support_file ORDER BY deliverable_no ASC, file_id ASC;")
+    columns = [col[0] for col in c.description]
+    rows = [dict(zip(columns, r)) for r in c.fetchall()]
+    conn.close()
+    return rows
 
 @app.post("/api/adbms/run_query")
 def execute_custom_query(req: QueryExecuteRequest):

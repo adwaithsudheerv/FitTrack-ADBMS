@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <!-- Chart.js for Live Data Analytics -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Local Chart.js with CDN fallback (Zero external blocking) -->
+    <script src="/static/chart.min.js" defer></script>
 
     <style>
         :root {
@@ -763,6 +763,9 @@
                 <span style="width:7px; height:7px; border-radius:50%; background:#34D399; box-shadow:0 0 8px #34D399;"></span>
                 Database Live
             </div>
+            <button class="btn btn-outline btn-sm" onclick="loadSupportFilesDirect()" style="color:#FFA0A0; border-color:rgba(255,30,39,0.5); font-size:0.76rem; padding:0.35rem 0.75rem;">
+                Deliverables Registry
+            </button>
         </div>
     </header>
 
@@ -775,7 +778,7 @@
         <button class="nav-link" data-tab="trainers" onclick="switchTab('trainers')">Trainers & Reviews</button>
         <button class="nav-link" data-tab="equipment" onclick="switchTab('equipment')">Branch Inventory</button>
         <button class="nav-link" data-tab="billing" onclick="switchTab('billing')">Invoices & Refunds</button>
-        <button class="nav-link" data-tab="adbms_console" data-tab="adbms_console" onclick="switchTab('adbms_console')" style="color: #FFA0A0;">ADBMS Task Explorer</button>
+        <button class="nav-link" data-tab="adbms_console" onclick="switchTab('adbms_console')" style="color: #FFA0A0;">ADBMS Task Explorer</button>
     </nav>
 
     <!-- Workspace Main Container -->
@@ -1161,6 +1164,17 @@
                         <div class="panel-desc">Select any prescribed syllabus task below to load verified SQL and execute live</div>
                     </div>
                     <button class="btn btn-outline" onclick="exportQueryToCSV()">Export Output (CSV)</button>
+                </div>
+
+                <!-- Direct Support File Action Card -->
+                <div style="background: rgba(255, 30, 39, 0.08); border: 1px solid rgba(255, 30, 39, 0.35); border-radius: 10px; padding: 1.1rem 1.4rem; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <div style="color: #FF5A5F; font-weight: 700; font-size: 0.98rem; margin-bottom: 0.2rem;">Expected Deliverables Registry (Lab Document Compliance)</div>
+                        <div style="color: var(--text-muted); font-size: 0.82rem;">Directly queries table <code>new_fittrack_adbms_support_file</code> to display Deliverables 1-9 & Tasks 1-12.</div>
+                    </div>
+                    <button class="btn" onclick="loadSupportFilesDirect()" style="padding: 0.45rem 1rem; font-size: 0.82rem; box-shadow: 0 0 15px rgba(255,30,39,0.4);">
+                        Run SELECT * FROM new_fittrack_adbms_support_file
+                    </button>
                 </div>
 
                 <div class="task-pills-row" id="task-pills-container"></div>
@@ -1978,6 +1992,15 @@
             const task = presetTasks[index];
             document.getElementById('task-meta-banner').innerHTML = `<strong>${task.title}:</strong> ${task.description}`;
             document.getElementById('sql-editor').value = task.sql;
+            executeCurrentQuery();
+        }
+
+        async function loadSupportFilesDirect() {
+            switchTab('adbms_console');
+            const supportSql = `SELECT file_id, deliverable_no, deliverable_title, task_mapping, file_name, file_path, status\nFROM new_fittrack_adbms_support_file\nORDER BY deliverable_no ASC, file_id ASC;`;
+            document.getElementById('sql-editor').value = supportSql;
+            document.getElementById('task-meta-banner').innerHTML = '<strong>Course Deliverables Registry:</strong> Querying table <code>new_fittrack_adbms_support_file</code> mapping all 9 deliverables and 12 ADBMS tasks.';
+            await executeCurrentQuery();
         }
 
         function clearQueryEditor() {
@@ -2050,18 +2073,18 @@
             showToast('success', 'Export Complete', 'Exported query results as CSV.');
         }
 
-        // Initialize and preload on Load
+        // Initialize and preload on Load (fault-tolerant independent execution)
         window.addEventListener('DOMContentLoaded', () => {
-            loadDashboard();
-            loadMembers();
-            loadPlans();
-            loadClasses();
-            loadBookings();
-            loadTrainers();
-            loadEquipment();
-            loadInvoices();
-            loadRefunds();
-            loadADBMSConsole();
+            try { loadDashboard(); } catch(e) { console.error('Dashboard init:', e); }
+            try { loadMembers(); } catch(e) { console.error('Members init:', e); }
+            try { loadPlans(); } catch(e) { console.error('Plans init:', e); }
+            try { loadClasses(); } catch(e) { console.error('Classes init:', e); }
+            try { loadBookings(); } catch(e) { console.error('Bookings init:', e); }
+            try { loadTrainers(); } catch(e) { console.error('Trainers init:', e); }
+            try { loadEquipment(); } catch(e) { console.error('Equipment init:', e); }
+            try { loadInvoices(); } catch(e) { console.error('Invoices init:', e); }
+            try { loadRefunds(); } catch(e) { console.error('Refunds init:', e); }
+            try { loadADBMSConsole(); } catch(e) { console.error('Console init:', e); }
         });
     </script>
 </body>

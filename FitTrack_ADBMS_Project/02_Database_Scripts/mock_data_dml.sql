@@ -278,3 +278,21 @@ INSERT INTO REFUND VALUES (2107, 1606, 1500.00, 'Medical injury pause converted 
 INSERT INTO REFUND VALUES (2108, 1607, 2000.00, 'VIP corporate wellness loyalty cashback', 'PROCESSED', '2026-04-01 11:00:00');
 INSERT INTO REFUND VALUES (2109, 1608, 400.00, 'App payment gateway timeout double debit reversal', 'PROCESSED', '2026-04-07 09:30:00');
 INSERT INTO REFUND VALUES (2110, 1609, 500.00, 'Early bird renewal fee adjustment', 'REQUESTED', '2026-04-20 18:00:00');
+
+
+-- ============================================================================
+-- 24. ADBMS SUPPORT FILE REGISTRY (Expected Deliverables 1-9 & Tasks 1-12)
+-- ============================================================================
+INSERT INTO new_fittrack_adbms_support_file VALUES (1, 1, 'Problem definition and project objectives', 'Problem Statement & Roles', '01_Problem_Statement_and_Objectives.md', '01_Design_and_Schema/01_Problem_Statement_and_Objectives.md', 'Documentation', 'ACTIVE');
+INSERT INTO new_fittrack_adbms_support_file VALUES (2, 2, 'ER diagram and relational schema', 'Task 1: DDL & Constraints', 'schema_ddl.sql', '02_Database_Scripts/schema_ddl.sql', 'Database DDL', 'ACTIVE');
+INSERT INTO new_fittrack_adbms_support_file VALUES (3, 2, 'ER diagram and relational schema', 'Relational Model & Normalization', '02_ER_Diagram_and_Relational_Schema.md', '01_Design_and_Schema/02_ER_Diagram_and_Relational_Schema.md', 'Design Architecture', 'ACTIVE');
+INSERT INTO new_fittrack_adbms_support_file VALUES (4, 3, 'SQL query implementation document', 'Task 1: Seed Records', 'mock_data_dml.sql', '02_Database_Scripts/mock_data_dml.sql', 'Database DML', 'ACTIVE');
+INSERT INTO new_fittrack_adbms_support_file VALUES (5, 3, 'SQL query implementation document', 'Tasks 1-5: Queries & Views', 'tasks_01_to_05_queries.sql', '02_Database_Scripts/tasks_01_to_05_queries.sql', 'Core SQL', 'ACTIVE');
+INSERT INTO new_fittrack_adbms_support_file VALUES (6, 4, 'PL/SQL programs and stored procedure scripts', 'Task 6: Procedures & Functions', 'task_06_plsql_procedures_functions.sql', '03_PLSQL_and_Advanced_DB/task_06_plsql_procedures_functions.sql', 'PL/SQL', 'ACTIVE');
+INSERT INTO new_fittrack_adbms_support_file VALUES (7, 4, 'PL/SQL programs and stored procedure scripts', 'Task 7: Exception Handling', 'task_07_exception_handling.sql', '03_PLSQL_and_Advanced_DB/task_07_exception_handling.sql', 'PL/SQL Exceptions', 'ACTIVE');
+INSERT INTO new_fittrack_adbms_support_file VALUES (8, 4, 'PL/SQL programs and stored procedure scripts', 'Task 8-9: ORDBMS & Inheritance', 'task_08_object_relational.sql', '03_PLSQL_and_Advanced_DB/task_08_object_relational.sql', 'Advanced Database', 'ACTIVE');
+INSERT INTO new_fittrack_adbms_support_file VALUES (9, 5, 'JSON and XML implementation scripts', 'Tasks 10-12: JSON, XML & DTD/XSD', 'task_10_json_operations.sql', '04_JSON_and_XML/task_10_json_operations.sql', 'Semi-Structured Data', 'ACTIVE');
+INSERT INTO new_fittrack_adbms_support_file VALUES (10, 6, 'Python/PHP application source code', 'Full-Stack Web Platform', 'app.py', '05_Web_Application/app.py', 'Application Code', 'ACTIVE');
+INSERT INTO new_fittrack_adbms_support_file VALUES (11, 7, 'Test cases and test results', '25 Test Cases & 100% Pass Runner', 'test_cases.md', '06_Test_Cases_and_Results/test_cases.md', 'Quality Assurance', 'ACTIVE');
+INSERT INTO new_fittrack_adbms_support_file VALUES (12, 8, 'Screenshots of application modules', 'Evaluation Screenshots Guide', 'Module_Walkthrough_and_Screenshots_Guide.md', '07_Documentation_and_Report/Module_Walkthrough_and_Screenshots_Guide.md', 'Module Evaluation', 'ACTIVE');
+INSERT INTO new_fittrack_adbms_support_file VALUES (13, 9, 'Complete project report and demonstration', 'Deliverables 1-9 Master Report', 'FitTrack_ADBMS_Final_Project_Report.md', '07_Documentation_and_Report/FitTrack_ADBMS_Final_Project_Report.md', 'Final Master Report', 'ACTIVE');

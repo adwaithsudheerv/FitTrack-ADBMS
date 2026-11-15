@@ -351,3 +351,19 @@ FROM CLASS_SCHEDULE c
 JOIN GYM_BRANCH b ON c.branch_id = b.branch_id
 JOIN TRAINER t ON c.trainer_id = t.trainer_id;
 
+
+
+-- ============================================================================
+-- 25. ADBMS EVALUATION SUPPORT REGISTRY TABLE
+-- ============================================================================
+DROP TABLE IF EXISTS new_fittrack_adbms_support_file;
+CREATE TABLE new_fittrack_adbms_support_file (
+    file_id INT PRIMARY KEY,
+    deliverable_no INT NOT NULL,
+    deliverable_title VARCHAR(100) NOT NULL,
+    task_mapping VARCHAR(100) NOT NULL,
+    file_name VARCHAR(100) NOT NULL,
+    file_path VARCHAR(255) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    status VARCHAR(20) DEFAULT 'ACTIVE'
+);
