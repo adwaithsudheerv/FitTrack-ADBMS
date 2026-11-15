@@ -92,19 +92,27 @@
             opacity: 0.25;
         }
 
-        /* Frosted Glass Header */
-        header {
+        /* Combined Sticky Navigation Shell */
+        .top-nav-bar {
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(8, 9, 13, 0.82);
+            background: rgba(8, 9, 13, 0.94);
             backdrop-filter: blur(24px) saturate(180%);
             -webkit-backdrop-filter: blur(24px) saturate(180%);
             border-bottom: 1px solid var(--glass-border);
-            padding: 1rem 2.5rem;
+        }
+
+        /* Frosted Glass Header */
+        header {
+            position: relative;
+            padding: 0.85rem 2.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            flex-wrap: wrap;
+            gap: 0.75rem;
         }
 
         .brand-cluster {
@@ -189,16 +197,12 @@
 
         /* Glassmorphic Navigation Bar */
         nav {
-            position: sticky;
-            top: 72px;
-            z-index: 90;
-            background: rgba(8, 9, 13, 0.75);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
-            padding: 0.5rem 2.5rem;
+            position: relative;
+            padding: 0.45rem 2.5rem;
             display: flex;
-            gap: 0.65rem;
+            gap: 0.5rem;
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .nav-link {
@@ -242,12 +246,12 @@
         }
 
         .tab-section {
-            display: none;
-            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: none !important;
         }
 
         .tab-section.active {
-            display: block;
+            display: block !important;
+            animation: fadeIn 0.25s ease-out;
         }
 
         @keyframes fadeIn {
@@ -735,51 +739,54 @@
         <div class="orb orb-2"></div>
     </div>
 
-    <!-- Header -->
-    <header>
-        <div class="brand-cluster">
-            <div class="brand-symbol">
-                <svg viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43L20.57 12L17 15.57L8.43 7L12 3.43L10.57 2L9.14 3.43L7.71 2L5.57 4.14L4.14 2.71L2.71 4.14L4.14 5.57L2 7.71L3.43 9.14L2 10.57L3.43 12L7 8.43L15.57 17L12 20.57L13.43 22L14.86 20.57L16.29 22L18.43 19.86L19.86 21.29L21.29 19.86L19.86 18.43L22 16.29L20.57 14.86Z"/></svg>
+    <!-- Top Sticky Shell containing Header and Navigation Tabs -->
+    <div class="top-nav-bar">
+        <!-- Header -->
+        <header>
+            <div class="brand-cluster">
+                <div class="brand-symbol">
+                    <svg viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43L20.57 12L17 15.57L8.43 7L12 3.43L10.57 2L9.14 3.43L7.71 2L5.57 4.14L4.14 2.71L2.71 4.14L4.14 5.57L2 7.71L3.43 9.14L2 10.57L3.43 12L7 8.43L15.57 17L12 20.57L13.43 22L14.86 20.57L16.29 22L18.43 19.86L19.86 21.29L21.29 19.86L19.86 18.43L22 16.29L20.57 14.86Z"/></svg>
+                </div>
+                <div class="brand-titles">
+                    <h1>FitTrack Pro</h1>
+                    <p>Enterprise Smart Gym Management System • ADBMS Architecture</p>
+                </div>
             </div>
-            <div class="brand-titles">
-                <h1>FitTrack Pro</h1>
-                <p>Enterprise Smart Gym Management System • ADBMS Architecture</p>
-            </div>
-        </div>
 
-        <div class="header-controls">
-            <!-- Global Member Context Selector -->
-            <div class="active-member-badge">
-                <label>Active Member:</label>
-                <select id="global-member-select" class="active-member-select" onchange="onGlobalMemberChange()">
-                    <option value="301">Rahul Sharma (#301)</option>
-                    <option value="302">Priya Patel (#302)</option>
-                    <option value="303">Aditya Varma (#303)</option>
-                    <option value="304">Sneha Reddy (#304)</option>
-                    <option value="305">Vikram Malhotra (#305)</option>
-                </select>
+            <div class="header-controls">
+                <!-- Global Member Context Selector -->
+                <div class="active-member-badge">
+                    <label>Active Member:</label>
+                    <select id="global-member-select" class="active-member-select" onchange="onGlobalMemberChange()">
+                        <option value="301">Rahul Sharma (#301)</option>
+                        <option value="302">Priya Patel (#302)</option>
+                        <option value="303">Aditya Varma (#303)</option>
+                        <option value="304">Sneha Reddy (#304)</option>
+                        <option value="305">Vikram Malhotra (#305)</option>
+                    </select>
+                </div>
+                <div style="font-size:0.78rem; font-weight:700; color:#34D399; display:flex; align-items:center; gap:0.4rem;">
+                    <span style="width:7px; height:7px; border-radius:50%; background:#34D399; box-shadow:0 0 8px #34D399;"></span>
+                    Database Live
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="loadSupportFilesDirect()" style="color:#FFA0A0; border-color:rgba(255,30,39,0.5); font-size:0.76rem; padding:0.35rem 0.75rem;">
+                    Deliverables Registry
+                </button>
             </div>
-            <div style="font-size:0.78rem; font-weight:700; color:#34D399; display:flex; align-items:center; gap:0.4rem;">
-                <span style="width:7px; height:7px; border-radius:50%; background:#34D399; box-shadow:0 0 8px #34D399;"></span>
-                Database Live
-            </div>
-            <button class="btn btn-outline btn-sm" onclick="loadSupportFilesDirect()" style="color:#FFA0A0; border-color:rgba(255,30,39,0.5); font-size:0.76rem; padding:0.35rem 0.75rem;">
-                Deliverables Registry
-            </button>
-        </div>
-    </header>
+        </header>
 
-    <!-- Navigation Tabs -->
-    <nav>
-        <button class="nav-link active" data-tab="analytics" onclick="switchTab('analytics')">Executive Dashboard</button>
-        <button class="nav-link" data-tab="members" onclick="switchTab('members')">Member Profiles</button>
-        <button class="nav-link" data-tab="plans" onclick="switchTab('plans')">Membership Packages</button>
-        <button class="nav-link" data-tab="classes" onclick="switchTab('classes')">Classes & Reservations</button>
-        <button class="nav-link" data-tab="trainers" onclick="switchTab('trainers')">Trainers & Reviews</button>
-        <button class="nav-link" data-tab="equipment" onclick="switchTab('equipment')">Branch Inventory</button>
-        <button class="nav-link" data-tab="billing" onclick="switchTab('billing')">Invoices & Refunds</button>
-        <button class="nav-link" data-tab="adbms_console" onclick="switchTab('adbms_console')" style="color: #FFA0A0;">ADBMS Task Explorer</button>
-    </nav>
+        <!-- Navigation Tabs -->
+        <nav>
+            <button class="nav-link active" data-tab="analytics" onclick="switchTab('analytics')">Executive Dashboard</button>
+            <button class="nav-link" data-tab="members" onclick="switchTab('members')">Member Profiles</button>
+            <button class="nav-link" data-tab="plans" onclick="switchTab('plans')">Membership Packages</button>
+            <button class="nav-link" data-tab="classes" onclick="switchTab('classes')">Classes & Reservations</button>
+            <button class="nav-link" data-tab="trainers" onclick="switchTab('trainers')">Trainers & Reviews</button>
+            <button class="nav-link" data-tab="equipment" onclick="switchTab('equipment')">Branch Inventory</button>
+            <button class="nav-link" data-tab="billing" onclick="switchTab('billing')">Invoices & Refunds</button>
+            <button class="nav-link" data-tab="adbms_console" onclick="switchTab('adbms_console')" style="color: #FFA0A0;">ADBMS Task Explorer</button>
+        </nav>
+    </div>
 
     <!-- Workspace Main Container -->
     <main class="workspace">
@@ -1344,10 +1351,11 @@
 
         // Robust Tab Navigation (Direct display control)
         function switchTab(tabId) {
+            console.log('switchTab called:', tabId);
             // 1. Hide all tab sections
             document.querySelectorAll('.tab-section').forEach(el => {
-                el.style.display = 'none';
                 el.classList.remove('active');
+                el.style.setProperty('display', 'none', 'important');
             });
 
             // 2. Remove active state from nav buttons
@@ -1358,8 +1366,10 @@
             // 3. Show selected section
             const target = document.getElementById('tab-' + tabId);
             if (target) {
-                target.style.display = 'block';
                 target.classList.add('active');
+                target.style.setProperty('display', 'block', 'important');
+            } else {
+                console.error('Target tab not found: tab-' + tabId);
             }
 
             // 4. Highlight active nav button
@@ -1368,7 +1378,10 @@
                 activeBtn.classList.add('active');
             }
 
-            // 5. Trigger tab data refresh safely
+            // 5. Scroll smoothly to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // 6. Trigger tab data refresh safely
             try {
                 if (tabId === 'analytics') loadDashboard();
                 else if (tabId === 'members') loadMembers();
@@ -1382,6 +1395,7 @@
                 console.error('Error refreshing tab data:', tabId, err);
             }
         }
+        window.switchTab = switchTab;
 
         // 1. Analytics & Executive Dashboard
         async function loadDashboard() {
@@ -2075,6 +2089,15 @@
 
         // Initialize and preload on Load (fault-tolerant independent execution)
         window.addEventListener('DOMContentLoaded', () => {
+            // Bind explicit click event listeners to every navigation button
+            document.querySelectorAll('.nav-link').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const tab = this.getAttribute('data-tab');
+                    if (tab) switchTab(tab);
+                });
+            });
+
             try { loadDashboard(); } catch(e) { console.error('Dashboard init:', e); }
             try { loadMembers(); } catch(e) { console.error('Members init:', e); }
             try { loadPlans(); } catch(e) { console.error('Plans init:', e); }
